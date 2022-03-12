@@ -18,14 +18,14 @@ public class ScenesLabel : MonoBehaviour
     void Start()
     {
         dicaText.text = dicas[PersistentManagerScript.Instance.actualLevel];
-        roundText.text = "Rounds: " + ScenesButton.Rounds;
+        roundText.text = "Round: " + ScenesButton.Rounds;
         pointsText.text = "Points: " + ScenesButton.Pontos;
         pontosPlayerText.text = PersistentManagerScript.Instance.Points.ToString();
     }
 
     public void checkRound()
     {
-        roundText.text = "Rounds: " + ScenesButton.Rounds;
+        roundText.text = "Round: " + ScenesButton.Rounds;
     }
 
     public void checkPoint() 

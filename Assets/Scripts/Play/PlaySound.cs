@@ -2,25 +2,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Linq;
 
 public class PlaySound : MonoBehaviour
 {
-    AudioClip[] audios;
+    public AudioClip[] audios;
     AudioClip selectedAudio;
     public AudioSource audioSource;
-
-    private void Awake()
-    {
-        audios = Resources.LoadAll<AudioClip>("Resources");
-    }
+    PersistentManagerScript persistentManager;
 
     private void Start()
     {
+        persistentManager = GameObject.Find("PersistentManager").GetComponent<PersistentManagerScript>();
+        audios = Resources.LoadAll<AudioClip>("Songs");
+
         foreach (var item in audios)
         {
-            if (item.name == (SceneManager.GetActiveScene().buildIndex - 1).ToString())
+            if (item.name == persistentManager.actualLevel.ToString())
             {
-                selectedAudio = audios[(SceneManager.GetActiveScene().buildIndex - 1)];
+                selectedAudio = audios[persistentManager.actualLevel];
             }
         }
     }
@@ -41,6 +41,9 @@ public class PlaySound : MonoBehaviour
             case 4:
                 PlaySound4();
                 break;
+            case 5:
+                PlaySound5();
+                break;
             default:
                 break;
         }
@@ -48,28 +51,48 @@ public class PlaySound : MonoBehaviour
 
     void PlaySound1()
     {
-        PlaySoundInterval(2.5f);
+        Debug.Log("Play sound 1");
+        StopAllCoroutines();
+        StartCoroutine(PlaySoundInterval(2.5f));
     }
 
     void PlaySound2()
     {
-        PlaySoundInterval(4f);
+        Debug.Log("Play sound 2");
+        StopAllCoroutines();
+        StartCoroutine(PlaySoundInterval(5f));
     }
 
     void PlaySound3()
     {
-        PlaySoundInterval(5.5f);
+        Debug.Log("Play sound 3");
+        StopAllCoroutines();
+        StartCoroutine(PlaySoundInterval(7.5f));
     }
 
     void PlaySound4()
     {
-        PlaySoundInterval(10f);
+        Debug.Log("Play sound 4");
+        StopAllCoroutines();
+        StartCoroutine(PlaySoundInterval(10f));
     }
 
-    void PlaySoundInterval(float toSeconds)
+    void PlaySound5()
     {
+        Debug.Log("Play sound 5");
+        StopAllCoroutines();
+        StartCoroutine(PlaySoundInterval(selectedAudio.length));
+    }
+
+
+    IEnumerator PlaySoundInterval(float seconds)
+    {
+        audioSource.Stop();
         audioSource.time = 0f;
         audioSource.PlayOneShot(selectedAudio);
-        audioSource.SetScheduledEndTime(AudioSettings.dspTime + (toSeconds - 0f));
+
+        yield return new WaitForSeconds(seconds);
+
+        audioSource.Stop();
     }
 }

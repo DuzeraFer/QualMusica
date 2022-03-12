@@ -10,6 +10,7 @@ public class ScenesButton : MonoBehaviour
     public TMP_InputField inputResposta;
     public Button NextDica;
     public Button LastDica;
+    public Button FirstDica;
 
     public string CantorResposta;
     public string MusicaResposta;
@@ -32,7 +33,7 @@ public class ScenesButton : MonoBehaviour
         changeScenes = GetComponent<ChangeScenes>();
 
         Cantor = new string[] { "MC DAVI", "MC LIVINHO", "MC PEDRINHO" };
-        Musica = new string[] { "BIPOLAR", "PAREM DE TRANSAR", "CANSEI DE ME APEGAR" };
+        Musica = new string[] { "BIPOLAR", "NA PONTA DO PÉ 2", "CANSEI DE ME APEGAR" };
 
         Rounds = 1;
         Pontos = 50;
@@ -44,8 +45,18 @@ public class ScenesButton : MonoBehaviour
 
     public void RepeatDica()
     {
-        Debug.Log("Repetiu o som");
-        playSound.selectPlaySound(Rounds);
+        if (FirstDica.gameObject.activeSelf == false)
+        {
+            Debug.Log("Repetiu o som");
+            playSound.selectPlaySound(Rounds);
+        }      
+    }
+
+    public void IniciarJogo()
+    {
+        playSound.selectPlaySound(1);
+        FirstDica.gameObject.SetActive(false);
+        NextDica.gameObject.SetActive(true);
     }
 
     public void ProximaDica()
@@ -55,10 +66,13 @@ public class ScenesButton : MonoBehaviour
         Pontos -= 10;
         playSound.selectPlaySound(Rounds);
 
-        if (Rounds == 3)
+        if (Rounds == 4)
         {
             NextDica.gameObject.SetActive(false);
             LastDica.gameObject.SetActive(true);
+
+            LastDica.enabled = false;
+            LastDica.image.color = new Color32(255, 255, 255, 120);
         }
     }
 
@@ -67,9 +81,7 @@ public class ScenesButton : MonoBehaviour
         Debug.Log("Ultima dica");
         Rounds++;
         Pontos -= 10;
-
-        LastDica.enabled = false;
-        LastDica.image.color = new Color32(255, 255, 255, 120); 
+        
         //Play AD
     }
 
@@ -84,6 +96,11 @@ public class ScenesButton : MonoBehaviour
         {
             inputResposta.text = "";
             Debug.Log("Resposta Errada");
+            RepeatDica();
+            if (Pontos != 10)
+            {
+                Pontos--;
+            }          
         }
     }
 }
